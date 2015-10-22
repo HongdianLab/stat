@@ -32,13 +32,15 @@ bool MetricStore::addStat(std::string jsonstr)
 }
 
 std::string MetricStore::getAllData() {
-    int timestamp = (int)time(NULL);
-    Document value(kObjectType, &_allocator);
+    if (_store.Empty()) {
+        return "";
+    }
 
-    if _store
+    int timestamp = (int)time(NULL);
     Document store;
     store.CopyFrom(_store, store.GetAllocator());
 
+    Document value(kObjectType, &_allocator);
     value.AddMember("timestamp_send",   timestamp,  _allocator);
     value.AddMember("data",             store,     _allocator);
 
