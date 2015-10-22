@@ -1,0 +1,56 @@
+MetricStore:
+==========
+provide C++ singleton for store data from agent
+
+api
+==========
+### 记录数据点
+  bool addStat(std::string jsonstr)
+  jsonformat:
+    {
+        "uuid": "986d5f06-23e5-11e5-8867-56847afe9799",     //必需,防止重复上传, 使用uuidv1 (时间+mac地址+sequenceID)
+        "metric": "media.blocktime",                        //必需，字符串，指标名称
+        "timestamp": 1436190432,                            //整型，时间戳,单位秒,数据点采集时间
+        "value": 1.11,                                      //必需，整型、浮点型、字符串，指标值
+        "tags": {
+            "user_id": "1",
+            "room_id": "2",
+            "app": "hongdian",
+            "live_id": "72843763"
+            }                                               //必需,kv对
+    }
+
+### 获取所有数据点
+  std:string getAllData()
+  jsonformat:
+    {
+        "timestamp_send":1436257897,
+        "data":[
+            {"uuid":"986d5f06-23e5-11e5-8867-56847afe9799","metric":"media.blocktime","timestamp":1436190432,"value":1.11,"tags":{"user_id":"1","room_id":"2","app":"hongdian","live_id":"72843763"}},
+            {"uuid":"ab6d5f06-23e5-11e5-8867-56847afe9799","metric":"media.blocktime","timestamp":1436190435,"value":0.51,"tags":{"user_id":"1","room_id":"2","app":"hongdian","live_id":"72843763"}},
+            {"uuid":"de6d5f06-23e5-11e5-8867-56847afe9799","metric":"media.blocktime","timestamp":1436190440,"value":2.11,"tags":{"user_id":"1","room_id":"2","app":"hongdian","live_id":"72843763"}}
+        ]
+    }
+
+http请求
+==========
+比如:
+curl -i -XPOST '10.163.254.67/statistics' -d '{
+  "timestamp_send": 1436257897,
+  "data":[
+  {"uuid":"986d5f06-23e5-11e5-8867-56847afe9799","metric":"media.blocktime","timestamp":1436190432,"value":1.11,"tags":{"user_id":"1","room_id":"2","app":"hongdian","live_id":"72843763"}},
+  {"uuid":"ab6d5f06-23e5-11e5-8867-56847afe9799","metric":"media.blocktime","timestamp":1436190435,"value":0.51,"tags":{"user_id":"1","room_id":"2","app":"hongdian","live_id":"72843763"}},
+  {"uuid":"de6d5f06-23e5-11e5-8867-56847afe9799","metric":"media.blocktime","timestamp":1436190440,"value":2.11,"tags":{"user_id":"1","room_id":"2","app":"hongdian","live_id":"72843763"}}
+  ]
+}'
+
+
+
+
+
+
+
+
+
+
+
