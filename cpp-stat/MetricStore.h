@@ -12,6 +12,7 @@
 #include <time.h>
 #include <pthread.h>
 
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
@@ -25,19 +26,18 @@ public:
     bool addStat(std::string jsonstr);
     std::string getAllData();
 
+	MetricStore()
+    {
+        _store.SetArray();
+    }
+
     ~MetricStore()
     {
         _store.Clear();
-        delete _allocator;
-        delete _store;
     }
-	MetricStore()
-    {
-        _allocator = _store.GetAllocator();
-    }
+
 private:
-    Document _store(kArrayType);
-    Document::AllocatorType& _allocator;
+    Document _store;
 };
 
 

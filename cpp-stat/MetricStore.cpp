@@ -12,7 +12,7 @@
 
 const static int MAX_STAT_SIZE = 1024;
 
-bool _checkValue(Document value){
+bool _checkValue(Document& value){
     bool ret = true;
     return ret;
 }
@@ -21,6 +21,7 @@ bool MetricStore::addStat(std::string jsonstr)
 {
     bool ret = true;
 
+    Document::AllocatorType& _allocator = _store.GetAllocator();
     Document value(kObjectType, &_allocator);
     value.Parse(jsonstr.c_str());
     ret = _checkValue(value);
@@ -40,6 +41,7 @@ std::string MetricStore::getAllData() {
     Document store;
     store.CopyFrom(_store, store.GetAllocator());
 
+    Document::AllocatorType& _allocator = _store.GetAllocator();
     Document value(kObjectType, &_allocator);
     value.AddMember("timestamp_send",   timestamp,  _allocator);
     value.AddMember("data",             store,     _allocator);
