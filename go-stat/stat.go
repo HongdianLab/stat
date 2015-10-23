@@ -22,7 +22,7 @@ type Key struct {
 }
 type Task struct {
 	key   *Key
-	value uint32
+	value uint64
 }
 
 type Result map[string]*Task
@@ -60,7 +60,7 @@ func NewStat(cycle int64, url string) (*Stat, error) {
 	return &s, nil
 }
 
-func (this *Stat) Acc(name string, tags map[string]string, value uint32) {
+func (this *Stat) Acc(name string, tags map[string]string, value uint64) {
 	//logger.Printf("Acc: %v,%v,%v\n", name, tags, value)
 	now := time.Now().Unix()
 	t := (now/this.cycle + 1) * this.cycle
