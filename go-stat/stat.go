@@ -5,7 +5,9 @@ import (
 	"github.com/parnurzeal/gorequest"
 	"github.com/satori/go.uuid"
 
+	"errors"
 	"log"
+	"net/url"
 	"os"
 	"time"
 )
@@ -48,9 +50,18 @@ func newKey(name string, tags map[string]string, t int64) *Key {
 	}
 	return k
 }
-func NewStat(cycle int64, url string) (*Stat, error) {
+func NewStat(cycle int64, rawurl string) (*Stat, error) {
+
+	_, err := url.Parse(rawurl)
+	if err != nil {
+		return nil, err
+	}
+	if cycle <= 5 {
+		return nil, errors.New("stat cycle must > 5.")
+	}
+
 	s := Stat{
-		url:   url,
+		url:   rawurl,
 		dict:  make(map[string]*Task),
 		cycle: cycle,
 		in:    make(chan *Task),
@@ -95,9 +106,14 @@ func (this *Stat) send() {
 			resp, body, errs := request.Post(this.url).
 				Send(string(buf)).
 				End()
-			if errs != nil || resp.StatusCode != 200 {
+			if errs != nil {
 				//TODO error
-				logger.Printf("%v,%v,%v\n", resp.StatusCode, body, errs)
+				logger.Printf("%v\n", errs)
+				continue
+			}
+
+			if resp.StatusCode != 200 {
+				logger.Printf("%v,%v\n", resp.StatusCode, body)
 				continue
 			}
 		}
